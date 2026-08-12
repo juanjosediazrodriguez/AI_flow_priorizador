@@ -2,6 +2,11 @@
 
 Este repositorio contiene el desarrollo del **Case Selector Lab** para el curso de MAKERS AI Product, realizado por el equipo **Los de Firewall**.
 
+### Integrantes
+* Jeronimo Campuzano
+* Juan Jose Diaz
+* Laura Andrea Castrillon
+
 El objetivo de este proyecto es pasar de una idea vaga a un caso de uso de Inteligencia Artificial defendible, evaluando rigurosamente si la IA aporta valor real frente a soluciones de software tradicional.
 
 ## 📝 Caso de Uso: Priorizador de Tareas Universitarias
