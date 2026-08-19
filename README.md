@@ -1,40 +1,159 @@
-# AI Product - Case Selector Lab: Priorizador de Tareas
+# AI Flow Priorizador: Case Selector Lab
 
-Este repositorio contiene el desarrollo del **Case Selector Lab** para el curso de MAKERS AI Product, realizado por el equipo **Los de Firewall**.
+> Una evaluación rigurosa del valor real de la IA en la priorización de tareas universitarias
 
-### Integrantes
-* Jeronimo Campuzano
-* Juan Jose Diaz
-* Laura Andrea Castrillon
+**Curso:** MAKERS AI Product  
+**Equipo:** Los de Firewall  
+**Integrantes:** Jeronimo Campuzano, Juan Jose Diaz, Laura Andrea Castrillon
 
-El objetivo de este proyecto es pasar de una idea vaga a un caso de uso de Inteligencia Artificial defendible, evaluando rigurosamente si la IA aporta valor real frente a soluciones de software tradicional.
+---
 
-## 📝 Caso de Uso: Priorizador de Tareas Universitarias
+## 📋 Propósito del Proyecto
 
-El proyecto se centra en resolver la fricción que tienen los estudiantes universitarios al organizar sus tareas y tiempos de estudio:
+Este repositorio documenta el desarrollo de un **Case Selector Lab** que pasa de una idea vaga a un caso de uso defendible de Inteligencia Artificial. A través de un análisis riguroso, evaluamos si la IA realmente aporta valor frente a soluciones de software tradicional, aplicando un framework estructurado:
 
-*   **Usuario:** Estudiante universitario con 5 a 7 materias que lleva sus pendientes en Notion.
-*   **Job-to-be-done (JTBD):** Cuando en la misma semana se le cruzan tareas, laboratorios y parciales, quiere decidir en qué orden hacer los pendientes y reservar bloques realistas de estudio, para llegar a cada entrega sin improvisar ni sobrecargar un día.
-*   **Problema actual:** Priorizan por fecha, hacen lo fácil primero, subestiman lo difícil y reorganizan sus calendarios manualmente, lo que resulta en entregas tardías y estrés.
-*   **Solución con IA:** Analizar y priorizar tareas de manera dinámica basándose en múltiples variables (complejidad, fechas límite, notas) y proponer bloques de estudio realistas en el calendario.
+```
+Reality Check → Scoring → AI Critic → Product Contract → AI Flow → Prototipo
+```
+
+---
+
+## 🎯 Caso de Uso: Priorizador de Tareas Universitarias
+
+### El Problema
+
+Los estudiantes universitarios con 5 a 7 materias enfrentan una fricción significativa al organizar sus tareas:
+
+- **Síntoma:** Cuando se cruzan tareas, laboratorios y parciales en la misma semana, no saben en qué orden priorizarlos
+- **Comportamiento actual:** Priorizan por fecha límite, hacen lo fácil primero, subestiman lo difícil, reorganizan calendarios manualmente
+- **Consecuencia:** Entregas tardías, estrés, improvisación
+
+### Job-to-be-Done (JTBD)
+
+> Cuando en la misma semana se me cruzan tareas, laboratorios y parciales, **quiero decidir en qué orden hacer los pendientes y reservar bloques realistas de estudio**, para llegar a cada entrega sin improvisar ni sobrecargar un día.
+
+### La Solución: Priorizador Inteligente
+
+Un sistema basado en IA que:
+
+- **Analiza** tareas con múltiples variables: complejidad estimada, fechas límite, dependencias, notas previas
+- **Prioriza dinámicamente** más allá de la fecha límite
+- **Propone bloques de estudio realistas** en el calendario del estudiante
+- **Ofrece alternativas** cuando hay conflictos de tiempo
+
+---
+
+## 📊 Estructura del Flujo
+
+```
+Reality Check (Fricción real)
+    ↓
+Scoring (IA vs Software Tradicional)
+    ↓
+AI Critic (¿Es viable? LLM como evaluador)
+    ↓
+Product Contract (Especificación rigurosa)
+    ↓
+AI Flow (Diagrama del sistema)
+    ↓
+Prototipo Ejecutable (API Groq + Llama 3)
+```
+
+---
 
 ## 🛠️ Contenido del Repositorio
 
-*   [`Sesion_8_Use_case.ipynb`](Sesion_8_Use_case.ipynb): Notebook de Google Colab que contiene todo el flujo de trabajo:
-    1.  **Reality Check:** Definición de la fricción real, evidencia y usuario.
-    2.  **Scoring (IA vs Software Tradicional):** Evaluación de si el problema realmente necesita IA.
-    3.  **AI Critic:** Uso de un LLM como crítico implacable para evaluar la viabilidad del caso.
-    4.  **Product Contract:** Generación de un contrato de producto detallado (inputs, outputs, métricas de éxito).
-    5.  **AI Flow:** Diagramación del flujo del sistema.
-    6.  **Prototipo:** Implementación de un prototipo ejecutable utilizando la API de Groq (Llama 3).
+### Archivo Principal: `Sesion_8_Use_case.ipynb`
 
-## 🚀 Cómo usar este proyecto
+El notebook de Google Colab contiene:
 
-Para ejecutar el notebook y probar el prototipo:
+1. **Reality Check**  
+   Definición rigurosa de la fricción, evidencia del problema y caracterización del usuario
 
-1.  Abre el archivo `Sesion_8_Use_case.ipynb` en **Google Colab**.
-2.  Obtén una API Key gratuita en [Groq Console](https://console.groq.com/keys).
-3.  En Colab, ve a la sección de **Secrets** (el ícono de la llave en el menú lateral izquierdo).
-4.  Crea un nuevo secreto llamado `GROQ_API_KEY` y pega tu clave.
-5.  Activa el acceso al secreto para el notebook.
-6.  Ejecuta las celdas secuencialmente para ver la evaluación y el funcionamiento del prototipo.
+2. **Scoring**  
+   Matriz de evaluación IA vs. soluciones tradicionales (interfaz manual, simple app, IA)
+
+3. **AI Critic**  
+   Uso de un LLM como crítico para validar la viabilidad del caso de uso
+
+4. **Product Contract**  
+   Especificación detallada del producto:
+   - Inputs esperados
+   - Outputs esperados
+   - Métricas de éxito
+
+5. **AI Flow**  
+   Diagramación del sistema y flujo de datos
+
+6. **Prototipo**  
+   Implementación ejecutable utilizando la API de Groq con Llama 3
+
+---
+
+## 🚀 Cómo Usar Este Proyecto
+
+### Requisitos Previos
+
+- Cuenta en Google Colab (gratuita)
+- API Key de Groq (gratuita en [Groq Console](https://console.groq.com/keys))
+
+### Pasos
+
+#### 1️⃣ Abre el notebook en Colab
+
+- Accede a [Google Colab](https://colab.research.google.com/)
+- Sube o abre `Sesion_8_Use_case.ipynb`
+
+#### 2️⃣ Obtén tu API Key de Groq
+
+- Registrate en [Groq Console](https://console.groq.com/keys)
+- Genera una nueva API Key (el plan gratuito es suficiente)
+
+#### 3️⃣ Configura el secreto en Colab
+
+- En el menú lateral de Colab, busca el ícono de **Secretos** (🔑)
+- Crea un nuevo secreto llamado `GROQ_API_KEY`
+- Pega tu clave de Groq
+- Marca la opción para que el notebook acceda al secreto
+
+#### 4️⃣ Ejecuta el notebook
+
+- Ejecuta las celdas secuencialmente desde la parte superior
+- Sigue los comentarios y explicaciones en cada sección
+- Interactúa con el prototipo en la última sección
+
+---
+
+## 💡 Qué Aprenderás
+
+Este proyecto ilustra:
+
+- ✅ Cómo **validar si un caso de uso realmente necesita IA** (no todo problema necesita ML)
+- ✅ **Estructura de un producto de IA defendible** (inputs, outputs, métricas)
+- ✅ **Uso de LLMs como herramienta de evaluación crítica** (AI Critic)
+- ✅ **Prototipado rápido** con APIs modernas (Groq, LLaMA 3)
+- ✅ **Integración de IA** en flujos reales de estudiantes
+
+---
+
+## 🔧 Tecnologías Utilizadas
+
+- **LLM:** Groq API (Llama 3.1 70B)
+- **Entorno:** Google Colab (Python)
+- **Librerías:**
+  - `groq` (cliente oficial)
+  - `json` (procesamiento de respuestas)
+
+---
+
+## 📈 Resultados Esperados
+
+El prototipo demuestra que:
+
+1. **La IA agrega valor** en casos complejos de múltiples variables (vs. simple ordenamiento por fecha)
+2. **El modelo entiende contexto** (complejidad, dependencias, horarios disponibles)
+3. **Propuestas realistas** considerando capacidad cognitiva del estudiante
+4. **Mejor UX** que gestión manual o aplicaciones simples
+
+---
+
