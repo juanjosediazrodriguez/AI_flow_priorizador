@@ -32,3 +32,47 @@ Un planificador AI no puede prometer tiempo que no existe. La parte confiable de
 1. Core: completar `pass_fail` para los 5 casos.
 2. Intermediate: crear `contract_check(output)` y ejecutarlo para cada caso, no solo para el happy path.
 3. Advanced: antes de crear eventos reales, implementar `detect_overlaps(events, proposed_blocks)` y exigir confirmacion humana.
+
+<!-- MAKERS_REVIEW_2026_08_27_START -->
+## Revision docente - 2026-08-27
+
+### Lo que vimos
+
+- Juan Jose Diaz hizo un avance fuerte sobre makers/review: schema congelado, evals PASS y buena explicacion de fechas relativas.
+- Jeronimo empezo a ordenar estructura del repo, lo cual es necesario para mantener el proyecto.
+- Laura tiene que dejar mas evidencia tecnica individual visible.
+- El riesgo principal del producto es proponer horarios incorrectos, ambiguos o solapados.
+- La siguiente mejora debe salir del prompt y entrar a validacion deterministica.
+
+### Reto de hoy
+
+Implementen o especifiquen detect_overlaps(events, proposed_blocks):
+
+1. Caso feliz: bloque libre.
+2. Caso con solapamiento.
+3. Caso con fecha relativa como "manana".
+4. Caso con timezone o formato raro.
+5. Caso sin disponibilidad suficiente.
+
+### Tarea obligatoria: diagrama de arquitectura
+
+Crear docs/arquitectura.md con un diagrama Mermaid que muestre:
+
+`mermaid
+flowchart LR
+  Usuario --> SolicitudAgenda
+  Calendario --> EventosExistentes
+  SolicitudAgenda --> Modelo
+  Modelo --> BloquesPropuestos
+  EventosExistentes --> ValidadorSolapamientos
+  BloquesPropuestos --> ValidadorSolapamientos
+  ValidadorSolapamientos --> AgendaSegura
+`
+
+Debe quedar claro que el modelo propone, pero el codigo valida fechas, disponibilidad y solapamientos.
+
+### Criterio de aceptacion
+
+No basta con que el agente sugiera una hora. Tiene que demostrar que esa hora no choca con nada.
+<!-- MAKERS_REVIEW_2026_08_27_END -->
+
