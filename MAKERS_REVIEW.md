@@ -76,3 +76,29 @@ Debe quedar claro que el modelo propone, pero el codigo valida fechas, disponibi
 No basta con que el agente sugiera una hora. Tiene que demostrar que esa hora no choca con nada.
 <!-- MAKERS_REVIEW_2026_08_27_END -->
 
+
+<!-- MAKERS_CODE_ARCH_REVIEW_2026_09_01_START -->
+## Revision de codigo y arquitectura - 2026-09-01
+
+### Lectura docente
+
+- Juan Jose Diaz tiene avance fuerte en schema, fechas relativas y evals.
+- Jeronimo aporto estructura del repo y scripts.
+- Laura tiene aporte visible principalmente en README; falta evidencia tecnica reciente.
+- No se detecto docs/arquitectura.md.
+
+### Revision de principios
+
+- Bien: identificaron que fechas relativas y agenda no se pueden dejar al modelo sin control.
+- Falta: convertir la regla de disponibilidad en codigo verificable.
+- Falta: arquitectura clara de input, calendario, modelo, bloques propuestos y validador de solapamientos.
+
+### Pendiente de equipo
+
+Crear docs/arquitectura.md y definir/implementar detect_overlaps(events, proposed_blocks) con casos de prueba.
+
+### Pendiente por poca evidencia individual
+
+Laura debe dejar un commit tecnico propio: un caso de eval de agenda, arquitectura del flujo o validacion de disponibilidad.
+<!-- MAKERS_CODE_ARCH_REVIEW_2026_09_01_END -->
+
