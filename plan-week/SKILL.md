@@ -7,10 +7,12 @@ description: Use when planning the week or a date range, scheduling vault tasks,
 
 ## Script usage
 
-Every operation goes through the gcal helper, run with its own venv:
+Every operation goes through the gcal helper, run from the repo root with the
+shared venv (dependencies live in the root `requirements.txt`, not inside
+`_scripts/gcal/`):
 
 ```
-cd _scripts/gcal && .venv/bin/python gcal.py <command>
+.venv/bin/python _scripts/gcal/gcal.py <command>
 ```
 
 Commands: `calendars`, `tasklists`, `tasks [--tasklist <id>]`,
