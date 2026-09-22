@@ -8,3 +8,13 @@ secrets/
 config/secrets.json
 api_keys.json
 credentials.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
