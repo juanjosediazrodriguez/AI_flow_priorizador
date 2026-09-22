@@ -45,17 +45,20 @@ files with the same name make the resolution ambiguous.
 ## Calendar & weekly planning
 
 All Google Calendar / Google Tasks operations and the weekly planning flow are
-defined in the `plan-week` skill (`.claude/skills/plan-week/SKILL.md`): the
-area routing map (calendar + task list IDs), gcal.py usage, and the full
-planning procedure. ALWAYS invoke that skill before any calendar or task
-operation — never guess IDs or commands from memory.
+defined in the `plan-week` skill (`plan-week/SKILL.md`): gcal.py usage, the
+plan format, and the full planning procedure. Calendar and task-list IDs and
+the scheduling policy live only in `_scripts/gcal/config.json` (gitignored).
+ALWAYS invoke that skill before any calendar or task operation — never guess
+IDs or commands from memory.
 
 ## Hard rules
 
 1. Every course, project, and personal area MUST contain a `TASKS.md` using
    the standard line format (see `_templates/tasks.md`). No exceptions.
 2. There is NO stored central task list. The global view is always computed
-   by scanning `**/TASKS.md`, excluding `90-archive/`.
+   by `gcal.py scan`, which parses every area linked from `/index.md`
+   (excluding `90-archive/`). An area missing from the index is invisible to
+   planning — scan reports any unregistered `TASKS.md`.
 3. Every structural change or task mutation gets ONE line appended to
    `/log.md`: `YYYY-MM-DD HH:MM | area | action`. Append-only — never edit
    or delete past lines.
@@ -66,9 +69,10 @@ operation — never guess IDs or commands from memory.
    always including `TASKS.md`. Ask for any missing metadata (schedule,
    grading %, repo path) instead of leaving placeholders silently.
 7. All Google Calendar AND Google Tasks operations go through
-   `_scripts/gcal/gcal.py` (direct API). Propose insertions as a table for
-   approval first; only run inserts after explicit user confirmation. Never
-   delete or move existing calendar events or tasks.
+   `_scripts/gcal/gcal.py` (direct API). Events are created only by
+   `gcal.py apply`, after `gcal.py check` produced the review table and the
+   user explicitly approved its code. Never delete or move existing calendar
+   events or tasks.
 8. Task edits happen in the area's own `TASKS.md` (single source of truth).
    A completed task is marked `[x]`, not deleted, until its area is archived.
 
