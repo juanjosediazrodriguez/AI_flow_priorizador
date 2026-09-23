@@ -1,0 +1,41 @@
+{
+  "_comment": "Copy to config.json (gitignored) and replace the <...> IDs. List yours with: python gcal.py calendars / python gcal.py tasklists",
+  "vault_path": "../../vault",
+  "private_paths": [
+    "20-personal/diary"
+  ],
+  "timezone": "America/Bogota",
+  "default_area": "personal",
+  "areas": {
+    "personal": {
+      "folder": "20-personal",
+      "calendar": "primary",
+      "tasklist": "@default"
+    },
+    "university": {
+      "folder": "10-university",
+      "calendar": "<university calendar ID>",
+      "tasklist": "<university task list ID>"
+    },
+    "professional": {
+      "folder": "30-professional",
+      "calendar": "<professional calendar ID>",
+      "tasklist": "<professional task list ID>"
+    }
+  },
+  "read_only_calendars": [
+    {
+      "name": "Sports",
+      "id": "<sports calendar ID>",
+      "busy": "negotiable"
+    }
+  ],
+  "policy": {
+    "earliest_start": "09:00",
+    "block_min_minutes": 30,
+    "block_max_minutes": 120,
+    "preferred_block_minutes": [90, 120],
+    "break_minutes": 15,
+    "all_day_events_block": false
+  }
+}

@@ -19,3 +19,9 @@ __pycache__/
 .venv/
 venv/
 env/
+
+# Local vault: the student's notes and tasks never go to git
+vault/
+
+# Planner config: holds the user's calendar and task-list IDs
+_scripts/gcal/config.json

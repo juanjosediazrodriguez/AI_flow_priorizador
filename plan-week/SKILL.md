@@ -7,44 +7,55 @@ description: Use when planning the week or a date range, scheduling vault tasks,
 
 ## Script usage
 
-Every operation goes through the gcal helper, run with its own venv:
+Every operation goes through the gcal helper, run from the repo root with the
+shared venv (dependencies live in the root `requirements.txt`):
 
 ```
-cd _scripts/gcal && .venv/bin/python gcal.py <command>
+.venv/bin/python _scripts/gcal/gcal.py <command>
 ```
 
-Commands: `calendars`, `tasklists`, `tasks [--tasklist <id>]`,
-`pull --calendar <id> --start <iso> --end <iso>`,
-`insert --title T --start <iso> --end <iso> --calendar <id> --desc D`,
-`task-insert --title T --due YYYY-MM-DD --tasklist <id> --notes N`.
+| Command | What it does |
+|---|---|
+| `scan` | Parses every `TASKS.md` linked from `vault/index.md` → JSON with validated `due`, `est_hours`, `prio`, `ctx`, `days_left`, `overdue` and `issues` per task |
+| `busy --start <iso> --end <iso>` | Events from every calendar that counts as busy time |
+| `check <plan.json> [--table]` | Validates a proposed plan against the policy and the real calendar; prints the review table and an approval code |
+| `apply <plan.json> --approved <code>` | The ONLY way to create events |
+| `tasks --area <area>` | Open Google Tasks (deadlines) of an area |
+| `task-insert --title T --due YYYY-MM-DD --area <area> --notes N` | One deadline task (date-only) |
+| `calendars`, `tasklists` | Only to fill `config.json` |
 
+- Timezone, calendars and task lists come from `config.json`: address them by **area name**
+  (`--area university`), never by ID.
 - Google Tasks are DATE-ONLY — the API discards times. A task marks the DEADLINE date;
   events carry the hours the work actually happens.
-- Timezone: America/Bogota (-05:00). Bare dates are treated as local midnight.
 - OAuth app is in testing mode: token expires ~weekly. On auth errors, run `gcal.py auth` (opens browser).
-- Mark planner-created items with `--notes "vault:<ctx path>"` / `--desc "vault:<ctx path>"` (or `vault:test`).
 
-## Area routing map
+## Configuration — IDs never live in this file
 
-Scheduling a planned task → event in its area's CALENDAR, one per allocated time slot.
-Google Tasks are the DEADLINE view and are almost always already populated — read
-"Tasks are deadlines, events are work" below before ever calling `task-insert`.
+Calendar IDs, task-list IDs, timezone, vault path and the planning policy live in
+`_scripts/gcal/config.json` (gitignored; committed template: `config.example.json`).
 
-| Area | Calendar ID (events) | Task list ID |
-|---|---|---|
-| Personal (`20-personal/`, default for unclear) | `primary` | `MDgzMTEzNzA5NTA0NjU0MzQwODI6MDow` (My Tasks) |
-| University (`10-university/`) | `ca64aabb2622978f8a44e5dc4ef171340df093a38dceebac170d6faf623f975d@group.calendar.google.com` | `NkZyeVBhSUtmLUY1MGV0bQ` |
-| Apolo (`30-professional/apolo/`) | `516c32a80733eac6acb09c047e63d96439892e57e83277995173b638775f349d@group.calendar.google.com` | `elNRLWwyX0tBLUQ5QW5mWQ` (APOLO) |
-| Startups | `539fc58f417a7e821f3cbc41616633954ae9d3319f516e80e61a10c4c2859749@group.calendar.google.com` | `dUlnVjRoT3V2M2dRSVVRcA` |
+If `config.json` is missing or still has `<...>` placeholders:
 
-Read-only / excluded:
+1. Run `calendars` and `tasklists`.
+2. Propose the area → calendar / task-list mapping to the user as the exact JSON that
+   will be written.
+3. Write `config.json` only after the user approves it. Never copy IDs into this skill,
+   `CLAUDE.md` or any other committed file.
 
-| Resource | ID | Rule |
-|---|---|---|
-| Sports calendar | `67d220de035501296a105821ad115da882649cbdf6f7e82a11262e68f39ed23d@group.calendar.google.com` | Read: gym + table tennis count as busy, but fully negotiable — may schedule over them when the week is tight. Never write. |
-| RCAC calendar | `ab25f3186012729e6c78e9aa65b50dc0c19d7201fff8ca13a1b24e32a1b71159@group.calendar.google.com` | Legacy. Exclude from busy-time entirely. Never write. |
-| RCAC task list | `VHNrWVFSN1IydzBHZjl4eg` | Legacy. Never write. |
-| Birthdays task list | `UTFuS295cDZiN3g0c1d3QQ` | Human-managed. Never write. |
+## The policy lives in config.json
+
+`config.json → policy` is the single source of the scheduling rules: earliest start,
+minimum and maximum block length, break between blocks, and whether all-day events count
+as busy. `check` enforces them. Do not restate their numbers here or in a proposal, and
+never override what `check` returns.
+
+- Aim each block at `policy.preferred_block_minutes`; `check` splits or rejects anything
+  outside the hard limits.
+- Soft preference `check` does not enforce: deep work earlier in the day unless the user
+  says otherwise.
+- `read_only_calendars` with `"busy": "negotiable"` (e.g. sports) count as busy but may be
+  scheduled over when the week is tight — `check` only warns about them.
 
 ## Tasks are deadlines, events are work
 
@@ -60,7 +71,7 @@ Therefore:
 
 - Planning a week writes **events only**. It does NOT write tasks.
 - The deadline tasks already exist in almost every case. ALWAYS run
-  `tasks --tasklist <id>` and read the list before creating anything — a planned block
+  `tasks --area <area>` and read the list before creating anything — a planned block
   and its deadline task have different titles AND different dates, so a duplicate does
   not look like one at a glance.
 - NEVER create a task dated at a planned-work day.
@@ -69,29 +80,63 @@ Therefore:
 - `task-insert` is only for a deliverable that appears in `TASKS.md` but has NO task
   in the list at all — and then `--due` is its REAL deadline. Ask the user first.
 
-## Rules
+## The plan: what you must output
 
-- Pulls for planning MUST cover every calendar above except RCAC (loop `pull --calendar <id>`).
-- Ignore all-day events when computing free slots.
-- A task with no clear area routes to Personal — ask if in doubt.
-- ALL writes (tasks and events) happen only after explicit user approval of the proposed
-  plan (CLAUDE.md hard rule 7). Never delete or move existing events or tasks.
+Write the proposal to `vault/.plans/<first-day-of-range>.json` with EXACTLY this schema.
+Missing or extra keys are rejected — do not add fields, do not rename them:
+
+```json
+{
+  "requires_confirmation": false,
+  "notes": "anything the user should know about this plan",
+  "blocks": [
+    {
+      "task": "Laboratorio 3: árbol AVL",
+      "ctx": "10-university/2026-2/estructuras-de-datos/assignments/lab-3-avl.md",
+      "area": "university",
+      "date": "2026-09-23",
+      "start": "14:00",
+      "end": "16:00",
+      "priority": "high",
+      "reason": "Due on the 28th, worth 10 %, not started yet."
+    }
+  ]
+}
+```
+
+- `task`, `ctx` and `area` are copied from the `scan` output (`ctx` is `""` when the task
+  has none). `priority` is `high | med | low`; `reason` is the one-line rationale the user
+  reviews.
+- Every date comes from `scan`, `busy` or the user — never from "today"/"tomorrow" guesses.
+- If the input is ambiguous, contradictory or insufficient, set
+  `"requires_confirmation": true`, put the question in `notes`, and ask. `check` will
+  schedule nothing from that plan.
 
 ## Weekly planning flow
 
 Trigger: user asks to plan/organize the week (or a date range).
 
-1. Pull busy blocks from every "read" calendar in the map (loop per calendar).
-2. Scan `**/TASKS.md` (minus `90-archive/`) for open tasks with `due` in or near the
-   range; include overdue open tasks.
+1. `scan` → open tasks with `due` in or near the range, plus `overdue` ones. Raise any
+   `issues` that affect planning (bad `due`, missing `ctx`, TASKS.md missing from the index).
+2. `busy --start <range start> --end <range end>`.
 3. For each candidate task, read its `ctx` note to validate the estimate. Ask the user
    about anything unclear — never invent an estimate.
-4. Propose a schedule as a markdown table: day, start–end, task, area, rationale.
-   Respect existing events; NEVER propose blocks before 9:00; default block length
-   1.5–2h with breaks; deep work earlier in the day unless told otherwise.
-5. Wait for explicit approval (user may edit the table).
-6. On approval, route by area per the map: one `insert` into that area's calendar for
-   each allocated time slot. Write NO tasks — see "Tasks are deadlines, events are
-   work". If some deliverable turns out to have no deadline task at all, flag it and
-   ask; do not quietly create one.
-7. Append the planning session to `/log.md`.
+4. Write the plan JSON (schema above).
+5. `check <plan> --table` and show the user the table and its approval code. You may
+   adjust the plan for rows marked PARTIDO/RECHAZADO and re-run `check`; always show the
+   final table.
+6. Wait for explicit approval of that table. If the user changes anything, edit the plan
+   and re-run `check` — the approval code changes with it.
+7. `apply <plan> --approved <code>`. It re-reads the calendar and refuses if the plan or
+   the calendar changed since the approval. It never duplicates events, so it is safe to
+   re-run after a failure, and it appends the session to `vault/log.md`.
+8. Write NO tasks — see "Tasks are deadlines, events are work". If some deliverable has no
+   deadline task at all, flag it and ask; do not quietly create one.
+
+## Rules
+
+- ALL writes (tasks and events) happen only after explicit user approval (CLAUDE.md hard
+  rule 7). Events are written only through `apply`.
+- Never delete or move existing events or tasks. gcal.py has no command for it; never
+  script one around the token, and never read or print `_scripts/gcal/secrets/`.
+- A task with no clear area routes to `default_area` — ask if in doubt.

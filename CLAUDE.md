@@ -1,81 +1,42 @@
-# Vault — Master Context
+# Vault — Master Context (Claude Code)
 
-Personal knowledge base and planning system for Jero, computer science
-student at EAFIT (6th semester) and developer. Working language: English.
+Las reglas del sistema son las mismas para todos los agentes y viven en un solo
+archivo. No las dupliques aquí: si algo cambia, cámbialo allá.
 
-This vault is the "second brain". Claude operates on it directly: reading
-context, maintaining tasks, planning the week, and (with approval) inserting
-Google Tasks and calendar events via the gcal helper.
+@AGENTS.md
 
-Personal background (bio, work, preferences, goals) lives in `/me.md`. Read it
-ONLY when the prompt requires knowing something personal about Jero — never
-load it for routine vault, task, or calendar operations.
+## Contexto del vault
 
-## Structure
+Base de conocimiento y sistema de planeación personal de un estudiante de
+Ingeniería de Sistemas en EAFIT. El vault es el "segundo cerebro": el agente
+opera directamente sobre él, leyendo contexto, manteniendo tareas, planeando la
+semana e insertando eventos y Google Tasks previa aprobación.
 
-- `00-inbox/` — quick capture. Anything here is unprocessed; help triage it
-  into the right area when asked.
-- `10-university/<semester>/<course>/` — one folder per course. Every course
-  follows `_templates/course.md`: `_course.md`, `TASKS.md`, `notes/`,
-  `assignments/`, `resources/`, `attachments/`.
-- `20-personal/<area>/` — personal life areas (finances, health, ...).
-- `30-professional/<project>/` — personal dev projects, fully in the vault:
-  `_project.md` (context entry point) + `TASKS.md` + notes, with the git repo
-  under `code/<repo-name>/`. Vault git ignores `**/code/` — every repo keeps
-  its own git and remote. Umbrella areas group subprojects (e.g. `apolo/`).
-  To work on a project, open Claude Code at its folder (docs + code together).
-  Courses may also carry code the same way (`10-university/.../<course>/code/`).
-- `90-archive/` — closed semesters and finished projects. Excluded from all
-  task scans.
-- `_templates/` — scaffolds for new courses, projects, and TASKS files.
-- `_scripts/gcal/` — Google Calendar API helper (`gcal.py`). Credentials in
-  this folder are gitignored and must never be committed.
+El contexto personal (bio, trabajo, preferencias, metas) vive en `/me.md`. Léelo
+SOLO cuando la petición requiera saber algo personal — nunca para operaciones
+rutinarias de vault, tareas o calendario.
 
-Entry point for any area is its `_course.md` / `_project.md` / `_semester.md`.
-Read it first before working inside that area.
+Para trabajar en un proyecto, abre el agente en su carpeta: quedan juntos los
+documentos y el código. Las materias pueden llevar código igual
+(`10-university/.../<materia>/code/`). Las áreas paraguas agrupan subproyectos.
 
-Attachments (pasted images, PDFs) live in the area's own `attachments/` folder
-— never in a vault-wide one, so archiving an area takes its images with it.
-Obsidian is configured to drop new pastes there automatically ("In subfolder
-under current folder" → `attachments`). Image links are wikilinks resolved by
-filename, not by path, so moving a note between areas never breaks an image;
-move its attachments along with it. Keep filenames unique vault-wide — two
-files with the same name make the resolution ambiguous.
+## Adjuntos
 
-## Calendar & weekly planning
+Las imágenes y PDFs pegados van en el `attachments/` del área, nunca en uno
+global: así archivar un área se lleva sus imágenes con ella. Obsidian está
+configurado para soltar los pegados ahí automáticamente ("In subfolder under
+current folder" → `attachments`).
 
-All Google Calendar / Google Tasks operations and the weekly planning flow are
-defined in the `plan-week` skill (`.claude/skills/plan-week/SKILL.md`): the
-area routing map (calendar + task list IDs), gcal.py usage, and the full
-planning procedure. ALWAYS invoke that skill before any calendar or task
-operation — never guess IDs or commands from memory.
+Los enlaces de imagen son wikilinks que Obsidian resuelve **por nombre de
+archivo, no por ruta**, así que mover una nota entre áreas nunca rompe una
+imagen; mové sus adjuntos con ella. Mantené los nombres de archivo únicos en
+todo el vault: dos archivos con el mismo nombre hacen la resolución ambigua.
 
-## Hard rules
+Ojo con la asimetría: los enlaces de `index.md` sí llevan ruta completa, porque
+los resuelve `gcal.py scan` y no Obsidian (regla dura 4).
 
-1. Every course, project, and personal area MUST contain a `TASKS.md` using
-   the standard line format (see `_templates/tasks.md`). No exceptions.
-2. There is NO stored central task list. The global view is always computed
-   by scanning `**/TASKS.md`, excluding `90-archive/`.
-3. Every structural change or task mutation gets ONE line appended to
-   `/log.md`: `YYYY-MM-DD HH:MM | area | action`. Append-only — never edit
-   or delete past lines.
-4. Keep `/index.md` updated whenever notes are created, moved, or archived.
-5. When estimating a task: read its `ctx` note first. If context is still
-   insufficient, ASK the user — never invent an estimate.
-6. New project or course → scaffold from the matching file in `_templates/`,
-   always including `TASKS.md`. Ask for any missing metadata (schedule,
-   grading %, repo path) instead of leaving placeholders silently.
-7. All Google Calendar AND Google Tasks operations go through
-   `_scripts/gcal/gcal.py` (direct API). Propose insertions as a table for
-   approval first; only run inserts after explicit user confirmation. Never
-   delete or move existing calendar events or tasks.
-8. Task edits happen in the area's own `TASKS.md` (single source of truth).
-   A completed task is marked `[x]`, not deleted, until its area is archived.
+## Específico de Claude Code
 
-## TASKS.md line format
-
-```
-- [ ] <title> | due:YYYY-MM-DD | est:<hours>h | prio:high|med|low | ctx:<relative/path.md>
-```
-
-`ctx` is optional but strongly preferred for anything estimated above 2h.
+El procedimiento de planeación semanal está en `plan-week/SKILL.md`. INVÓCALO
+siempre antes de cualquier operación de calendario o tareas — nunca adivines
+IDs ni comandos de memoria.
