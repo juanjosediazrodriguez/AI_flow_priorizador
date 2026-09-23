@@ -9,3 +9,13 @@ config/secrets.json
 api_keys.json
 credentials.json
 .DS_Store
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
